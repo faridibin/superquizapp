@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Splash from './components/Splash';
+import Quiz from './components/Quiz';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = () => {
+	const [questions, setQuestions] = useState([]);
+
+	useEffect(() => {
+		const fetchQuestions = async () => {
+			const response = await axios.get('https://scs-interview-api.herokuapp.com/questions');
+			setQuestions(response.data);
+		};
+
+		fetchQuestions();
+	}, []);
+
+	return (
+		<div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
+			<div className="relative bg-white shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg rounded-lg h-152 w-96">
+				<div className="mx-auto max-w-md">
+					{questions.length === 0 ? <Splash /> : <Quiz questions={questions} />}
+				</div>
+			</div>
+		</div>
+	);
 }
 
 export default App;
